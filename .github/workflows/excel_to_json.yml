@@ -1,0 +1,56 @@
+name: Excel to JSON PR Pipeline
+
+on:
+  push:
+    branches:
+      - poc_source
+    paths:
+      - 'data/**/*.xlsx'
+
+jobs:
+  convert-and-pr:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Install dependencies
+        run: pip install pandas openpyxl
+
+      - name: Convert Excel to JSON
+        run: python sttm_convert.py
+
+      - name: Create Pull Request via GitHub CLI
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          BRANCH="auto/json-${{ github.run_id }}"
+
+          git checkout -b "$BRANCH"
+          git add .
+          git diff --cached --quiet && echo "No changes to commit" && exit 0
+
+          git commit -m "Auto-generated JSON from Excel"
+          git push origin "$BRANCH"
+
+          gh pr create \
+            --base poc_target \
+            --head "$BRANCH" \
+            --title "Excel to JSON Auto PR" \
+            --body $'Excel upload detected. JSON files were generated automatically.\n\nReviewer: Rishabh\nAssignee: Yeswanth\n\nPlease review the generated JSON changes before merging.' \
+            --reviewer rishabh \
+            --assignee yeswanth
