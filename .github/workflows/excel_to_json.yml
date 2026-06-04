@@ -50,7 +50,6 @@ jobs:
           git commit -m "Auto-generated JSON from Excel"
           git push origin "$BRANCH"
 
-          # Create PR and capture PR number
           PR_URL=$(gh pr create \
             --base poc_target \
             --head "$BRANCH" \
@@ -59,7 +58,6 @@ jobs:
 
           echo "PR created: $PR_URL"
 
-          # Merge the PR
-          gh pr merge "$PR_URL" --merge --auto
+          gh pr merge "$PR_URL" --merge --delete-branch
 
-          echo "Branch $BRANCH will be deleted after PR is merged"
+          echo "PR merged and branch $BRANCH deleted ✅"
