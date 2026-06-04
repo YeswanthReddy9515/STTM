@@ -3,7 +3,7 @@ name: Excel to JSON PR Pipeline
 on:
   push:
     branches:
-      - poc_source
+      - main
     paths:
       - 'data/**/*.xlsx'
 
