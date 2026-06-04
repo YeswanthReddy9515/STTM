@@ -1,0 +1,74 @@
+[
+  {
+    "Source_System": "CRM",
+    "Source_Table": "customers",
+    "Source_Column": "cust_id",
+    "Source_DataType": "INT",
+    "Target_System": "DWH",
+    "Target_Table": "dim_customer",
+    "Target_Column": "customer_id",
+    "Target_DataType": "BIGINT",
+    "Transformation_Logic": "Direct Mapping",
+    "Remarks": "PK"
+  },
+  {
+    "Source_System": "CRM",
+    "Source_Table": "customers",
+    "Source_Column": "cust_name",
+    "Source_DataType": "VARCHAR(100)",
+    "Target_System": "DWH",
+    "Target_Table": "dim_customer",
+    "Target_Column": "customer_name",
+    "Target_DataType": "VARCHAR(200)",
+    "Transformation_Logic": "UPPER(cust_name)",
+    "Remarks": "Normalize to uppercase"
+  },
+  {
+    "Source_System": "ERP",
+    "Source_Table": "orders",
+    "Source_Column": "order_id",
+    "Source_DataType": "INT",
+    "Target_System": "DWH",
+    "Target_Table": "fact_orders",
+    "Target_Column": "order_id",
+    "Target_DataType": "BIGINT",
+    "Transformation_Logic": "Direct Mapping",
+    "Remarks": "PK"
+  },
+  {
+    "Source_System": "ERP",
+    "Source_Table": "orders",
+    "Source_Column": "order_date",
+    "Source_DataType": "DATE",
+    "Target_System": "DWH",
+    "Target_Table": "fact_orders",
+    "Target_Column": "order_date",
+    "Target_DataType": "DATE",
+    "Transformation_Logic": "CAST(order_date AS DATE)",
+    "Remarks": "Format: YYYY-MM-DD"
+  },
+  {
+    "Source_System": "HRMS",
+    "Source_Table": "employees",
+    "Source_Column": "emp_id",
+    "Source_DataType": "INT",
+    "Target_System": "DWH",
+    "Target_Table": "dim_employee",
+    "Target_Column": "employee_id",
+    "Target_DataType": "BIGINT",
+    "Transformation_Logic": "Direct Mapping",
+    "Remarks": "PK"
+  },
+  {
+    "Source_System": "HRMS",
+    "Source_Table": "employees",
+    "Source_Column": "emp_name",
+    "Source_DataType": "VARCHAR(100)",
+    "Target_System": "DWH",
+    "Target_Table": "dim_employee",
+    "Target_Column": "employee_name",
+    "Target_DataType": "VARCHAR(200)",
+    "Transformation_Logic": "CONCAT(first_name, ' ', last_name)",
+    "Remarks": "Full name concatenation"
+  }
+]
