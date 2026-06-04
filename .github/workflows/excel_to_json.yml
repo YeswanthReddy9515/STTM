@@ -6,7 +6,7 @@ on:
       - main
     paths:
       - 'data/**/*.xlsx'
-  workflow_dispatch: 
+  workflow_dispatch:
 
 jobs:
   convert-and-pr:
@@ -40,6 +40,9 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
           BRANCH="auto/json-${{ github.run_id }}"
+
+          # Delete remote branch if it already exists (from previous failed run)
+          git push origin --delete "$BRANCH" 2>/dev/null || true
 
           git checkout -b "$BRANCH"
           git add .
