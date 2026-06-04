@@ -50,9 +50,16 @@ jobs:
           git commit -m "Auto-generated JSON from Excel"
           git push origin "$BRANCH"
 
-          gh pr create \
+          # Create PR and capture PR number
+          PR_URL=$(gh pr create \
             --base poc_target \
             --head "$BRANCH" \
             --title "Excel to JSON Auto PR" \
-            --body $'Excel upload detected. JSON files were generated automatically.\n\nPlease review the generated JSON changes before merging.' \
-            --delete-branch
+            --body $'Excel upload detected. JSON files were generated automatically.\n\nPlease review the generated JSON changes before merging.')
+
+          echo "PR created: $PR_URL"
+
+          # Merge the PR
+          gh pr merge "$PR_URL" --merge --auto
+
+          echo "Branch $BRANCH will be deleted after PR is merged"
