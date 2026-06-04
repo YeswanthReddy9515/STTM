@@ -40,10 +40,13 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          # Save generated JSON files to temp location
+          # Save JSON to temp BEFORE switching branch
           cp -r output_json /tmp/output_json
 
-          # Checkout poc_target branch (clean)
+          # Remove from current workspace so checkout doesn't fail
+          rm -rf output_json
+
+          # Checkout poc_target branch
           git checkout poc_target
 
           # Remove old JSON files
@@ -52,7 +55,7 @@ jobs:
           # Copy only fresh JSON files
           cp -r /tmp/output_json ./output_json
 
-          # Create a new branch from poc_target
+          # Create new branch from poc_target
           BRANCH="auto/json-${{ github.run_id }}"
           git push origin --delete "$BRANCH" 2>/dev/null || true
           git checkout -b "$BRANCH"
