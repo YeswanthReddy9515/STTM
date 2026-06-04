@@ -51,6 +51,4 @@ jobs:
             --base poc_target \
             --head "$BRANCH" \
             --title "Excel to JSON Auto PR" \
-            --body $'Excel upload detected. JSON files were generated automatically.\n\nReviewer: Rishabh\nAssignee: Yeswanth\n\nPlease review the generated JSON changes before merging.' \
-            --reviewer rishabh \
-            --assignee yeswanth
+            --body $'Excel upload detected. JSON files were generated automatically.\n\nPlease review the generated JSON changes before merging.'
