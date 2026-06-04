@@ -16,9 +16,10 @@ jobs:
       pull-requests: write
 
     steps:
-      - name: Checkout repository
+      - name: Checkout main
         uses: actions/checkout@v5
         with:
+          ref: main
           fetch-depth: 0
 
       - name: Setup Python
@@ -32,19 +33,31 @@ jobs:
       - name: Convert Excel to JSON
         run: python sttm_convert.py
 
-      - name: Create Pull Request via GitHub CLI
+      - name: Checkout poc_target and copy only JSON
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
+          # Save generated JSON files to temp location
+          cp -r output_json /tmp/output_json
+
+          # Checkout poc_target branch (clean)
+          git checkout poc_target
+
+          # Remove old JSON files
+          rm -rf output_json
+
+          # Copy only fresh JSON files
+          cp -r /tmp/output_json ./output_json
+
+          # Create a new branch from poc_target
           BRANCH="auto/json-${{ github.run_id }}"
-
           git push origin --delete "$BRANCH" 2>/dev/null || true
-
           git checkout -b "$BRANCH"
-          git add .
+
+          git add output_json/
           git diff --cached --quiet && echo "No changes to commit" && exit 0
 
           git commit -m "Auto-generated JSON from Excel"
